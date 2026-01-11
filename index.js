@@ -17,8 +17,14 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 // ───── Connect MongoDB ─────
-await mongoose.connect(process.env.MONGO_URI, {});
-console.log('✅ MongoDB Connected');
+const mongoUri = process.env.MONGO_URI;
+
+if (!mongoUri) {
+  console.error("❌ MONGO_URI is missing");
+  process.exit(1);
+}
+
+await mongoose.connect(mongoUri);;
 
 // ───── Discord Client ─────
 const client = new Client({
@@ -214,3 +220,4 @@ app.post('/webhook/apollo', async (req,res)=>{
 app.listen(3000,()=>console.log("Webhook ready"));
 
 client.login(process.env.DISCORD_TOKEN);
+
